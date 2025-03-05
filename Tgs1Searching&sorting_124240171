@@ -1,0 +1,174 @@
+#include <iostream>
+#include <string>
+using namespace std;
+
+struct Buku {
+    string judul;
+    int tahunTerbit;
+};
+
+// Fungsi validasi input angka
+int validasiAngka() {
+    int angka;
+    while (!(cin >> angka)) {
+        cin.clear();
+        cin.ignore(1000, '\n');
+        cout << "Input tidak valid! Masukkan angka yang benar: ";
+    }
+    return angka;
+}
+
+// Fungsi untuk memasukkan data buku
+void tambahBuku(Buku koleksi[], int &jumlah) {
+    cout << "Masukkan jumlah buku: ";
+    jumlah = validasiAngka();
+    cin.ignore();
+    for (int i = 0; i < jumlah; i++) {
+        cout << "Masukkan judul buku ke-" << (i + 1) << ": ";
+        getline(cin, koleksi[i].judul);
+        cout << "Masukkan tahun terbit: ";
+        koleksi[i].tahunTerbit = validasiAngka();
+        cin.ignore();
+    }
+}
+
+// Fungsi untuk menampilkan daftar buku
+void tampilkanKoleksi(Buku koleksi[], int jumlah) {
+    if (jumlah == 0) {
+        cout << "Belum ada buku yang tersimpan.\n";
+        return;
+    }
+    cout << "\nDaftar Buku:\n";
+    for (int i = 0; i < jumlah; i++) {
+        cout << koleksi[i].tahunTerbit << " - " << koleksi[i].judul << endl;
+    }
+}
+
+// Algoritma Bubble Sort
+void urutkanBubble(Buku koleksi[], int jumlah) {
+    for (int i = 0; i < jumlah - 1; i++) {
+        for (int j = 0; j < jumlah - i - 1; j++) {
+            if (koleksi[j].tahunTerbit > koleksi[j + 1].tahunTerbit) {
+                swap(koleksi[j], koleksi[j + 1]);
+            }
+        }
+    }
+}
+
+// Algoritma Quick Sort
+void urutkanQuick(Buku koleksi[], int kiri, int kanan) {
+    if (kiri >= kanan) return;
+    int i = kiri, j = kanan;
+    int pivot = koleksi[(kiri + kanan) / 2].tahunTerbit;
+    while (i <= j) {
+        while (koleksi[i].tahunTerbit < pivot) i++;
+        while (koleksi[j].tahunTerbit > pivot) j--;
+        if (i <= j) {
+            swap(koleksi[i], koleksi[j]);
+            i++;
+            j--;
+        }
+    }
+    urutkanQuick(koleksi, kiri, j);
+    urutkanQuick(koleksi, i, kanan);
+}
+
+// Pencarian Sequential
+void cariSequential(Buku koleksi[], int jumlah, int tahun) {
+    bool ditemukan = false;
+    for (int i = 0; i < jumlah; i++) {
+        if (koleksi[i].tahunTerbit == tahun) {
+            cout << "Ditemukan: " << koleksi[i].judul << " (" << koleksi[i].tahunTerbit << ")\n";
+            ditemukan = true;
+        }
+    }
+    if (!ditemukan) cout << "Buku tidak ditemukan.\n";
+}
+
+// Pencarian Binary
+int cariBinary(Buku koleksi[], int kiri, int kanan, int tahun) {
+    while (kiri <= kanan) {
+        int tengah = kiri + (kanan - kiri) / 2;
+        if (koleksi[tengah].tahunTerbit == tahun) return tengah;
+        if (koleksi[tengah].tahunTerbit < tahun) kiri = tengah + 1;
+        else kanan = tengah - 1;
+    }
+    return -1;
+}
+
+int main() {
+    Buku koleksi[100];
+    int jumlah = 0, pilihan, tahun;
+    bool sudahDiurutkan = false;
+
+    do {
+        cout << "\n=== MENU ===\n";
+        cout << "1. Tambah Data Buku\n";
+        cout << "2. Tampilkan Data Buku\n";
+        cout << "3. Urutkan dengan Bubble Sort\n";
+        cout << "4. Urutkan dengan Quick Sort\n";
+        cout << "5. Cari dengan Sequential Search\n";
+        cout << "6. Cari dengan Binary Search\n";
+        cout << "7. Keluar\n";
+        cout << "Pilihan Anda: ";
+        pilihan = validasiAngka();
+        cin.ignore();
+
+        switch (pilihan) {
+            case 1:
+                tambahBuku(koleksi, jumlah);
+                sudahDiurutkan = false;
+                break;
+            case 2:
+                tampilkanKoleksi(koleksi, jumlah);
+                break;
+            case 3:
+                if (jumlah == 0) cout << "Belum ada data!\n";
+                else {
+                    urutkanBubble(koleksi, jumlah);
+                    sudahDiurutkan = true;
+                    cout << "\n== Data telah diurutkan dengan Bubble Sort ==\n";
+                    tampilkanKoleksi(koleksi, jumlah);
+                }
+                break;
+            case 4:
+                if (jumlah == 0) cout << "Belum ada data!\n";
+                else {
+                    urutkanQuick(koleksi, 0, jumlah - 1);
+                    sudahDiurutkan = true;
+                    cout << "\n== Data telah diurutkan dengan Quick Sort ==\n";
+                    tampilkanKoleksi(koleksi, jumlah);
+                }
+                break;
+            case 5:
+                if (jumlah == 0) cout << "Belum ada data!\n";
+                else {
+                    cout << "Masukkan tahun yang dicari: ";
+                    tahun = validasiAngka();
+                    cariSequential(koleksi, jumlah, tahun);
+                }
+                break;
+            case 6:
+                if (jumlah == 0) cout << "Belum ada data!\n";
+                else if (!sudahDiurutkan) {
+                    cout << "Data belum diurutkan! Silakan urutkan terlebih dahulu.\n";
+                } else {
+                    cout << "Masukkan tahun yang dicari: ";
+                    tahun = validasiAngka();
+                    int indeks = cariBinary(koleksi, 0, jumlah - 1, tahun);
+                    if (indeks != -1)
+                        cout << "Ditemukan: " << koleksi[indeks].judul << " (" << koleksi[indeks].tahunTerbit << ")\n";
+                    else
+                        cout << "Buku tidak ditemukan.\n";
+                }
+                break;
+            case 7:
+                cout << "Terima kasih telah menggunakan program ini!\n";
+                break;
+            default:
+                cout << "Pilihan tidak valid, silakan coba lagi.\n";
+        }
+    } while (pilihan != 7);
+
+    return 0;
+}
