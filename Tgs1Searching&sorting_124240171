@@ -7,7 +7,7 @@ struct Buku {
     int tahunTerbit;
 };
 
-// Fungsi validasi input angka
+// validasi input angka
 int validasiAngka() {
     int angka;
     while (!(cin >> angka)) {
@@ -18,7 +18,7 @@ int validasiAngka() {
     return angka;
 }
 
-// Fungsi untuk memasukkan data buku
+// untuk memasukkan data buku
 void tambahBuku(Buku koleksi[], int &jumlah) {
     cout << "Masukkan jumlah buku: ";
     jumlah = validasiAngka();
@@ -32,7 +32,7 @@ void tambahBuku(Buku koleksi[], int &jumlah) {
     }
 }
 
-// Fungsi untuk menampilkan daftar buku
+// untuk menampilkan daftar buku
 void tampilkanKoleksi(Buku koleksi[], int jumlah) {
     if (jumlah == 0) {
         cout << "Belum ada buku yang tersimpan.\n";
@@ -44,7 +44,7 @@ void tampilkanKoleksi(Buku koleksi[], int jumlah) {
     }
 }
 
-// Algoritma Bubble Sort
+// Bubble Sort
 void urutkanBubble(Buku koleksi[], int jumlah) {
     for (int i = 0; i < jumlah - 1; i++) {
         for (int j = 0; j < jumlah - i - 1; j++) {
@@ -55,7 +55,7 @@ void urutkanBubble(Buku koleksi[], int jumlah) {
     }
 }
 
-// Algoritma Quick Sort
+// Quick Sort
 void urutkanQuick(Buku koleksi[], int kiri, int kanan) {
     if (kiri >= kanan) return;
     int i = kiri, j = kanan;
